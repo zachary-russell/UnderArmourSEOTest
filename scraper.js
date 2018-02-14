@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer');
 
+const { chromeArgs } = require('./config');
+
 module.exports = {
   // Content parsing
   getTitle: ($) => {
@@ -48,14 +50,16 @@ module.exports = {
   },
 
   renderPage: async (url) => {
-    return await puppeteer.launch().then(async (browser) => {
-      const page = await browser.newPage();
-      await page.goto(url);
-      const content = await page.content();
+    const args = chromeArgs || {};
+    return await puppeteer.launch({ args })
+      .then(async (browser) => {
+        const page = await browser.newPage();
+        await page.goto(url);
+        const content = await page.content();
 
-      browser.close();
+        browser.close();
 
-      return content;
-    });
+        return content;
+      });
   }
 };
